@@ -3,10 +3,10 @@ import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-
+import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-function BasicTabs() {
+function Root() {
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
 
@@ -37,8 +37,9 @@ function BasicTabs() {
           <Tab label="User" />
         </Tabs>
       </Box>
+      <Outlet />
     </Box>
   );
 }
 
-export default BasicTabs;
+export default Root;
