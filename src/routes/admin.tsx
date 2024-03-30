@@ -15,6 +15,7 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { Client } from "../types";
 
 // Styling for the modal - adjust as necessary
 const style = {
@@ -41,7 +42,7 @@ export default function AdminPage() {
   const [name, setName] = useState(""); // State for name input
   const [selectedType, setSelectedType] = useState("");
   const [selectedConfig, setSelectedConfig] = useState("");
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
