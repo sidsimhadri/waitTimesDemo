@@ -1,16 +1,12 @@
-// BasicTabs.js or BasicTabs.tsx
+
 import React, { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button'
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import dayjs, { Dayjs } from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -93,9 +89,17 @@ function Root() {
             </ListItemButton>
         </List>
 
-      </Drawer>
+        </Drawer>
+        
+
+
+
       </Box>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+
+
+
+
+            <Box sx={{ borderBottom: 1, borderColor: "divider", position: "relative" }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -106,7 +110,11 @@ function Root() {
         </Tabs>
           <Outlet />
       </Box>
-      </Box>
+    </Box>
+    
+
+
+    
   );
 }
 
