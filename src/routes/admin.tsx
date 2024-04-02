@@ -9,10 +9,10 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@mui/material/IconButton";
+
 import TextField from "@mui/material/TextField"; // Added import for TextField
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
-import RefreshIcon from "@mui/icons-material/Refresh";
+
 import { CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Client } from "../types";
@@ -42,12 +42,7 @@ export default function AdminPage() {
   const [name, setName] = useState(""); // State for name input
   const [selectedType, setSelectedType] = useState("");
   const [selectedConfig, setSelectedConfig] = useState("");
-  const [clients, setClients] = useState<Client[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    refreshGrid(); // Fetch clients when component mounts
-  }, []);
+
   const types = ["gas", "checkout", "parking"];
   const configs = ["default", "heavy"];
   const handleOpen = () => setOpen(true);
@@ -72,28 +67,6 @@ export default function AdminPage() {
     handleClose(); // Close the modal after submit
   };
 
-  const refreshGrid = async () => {
-    setIsLoading(true);
-    setError("");
-    try {
-      const response = await fetch(`${API_URL}/clients`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch clients");
-      }
-      const data = await response.json();
-      console.log(data)
-      setClients(data); // Adjust according to your response structure
-    } catch (error) {
-      let errorMessage = "Failed to fetch clients";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      console.log(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Button
@@ -103,10 +76,6 @@ export default function AdminPage() {
       >
         Launch Client
       </Button>
-      <IconButton onClick={refreshGrid}>
-        {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
-      </IconButton>
-      {error && <Typography color="error">{error}</Typography>}
       <Modal
         open={open}
         onClose={handleClose}
@@ -159,17 +128,6 @@ export default function AdminPage() {
           </Button>
         </Box>
       </Modal>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {clients.map((client, index) => (
-          <Grid xs={2} sm={4} md={4} key={index}>
-            <Item>{index}</Item>
-          </Grid>
-        ))}
-      </Grid>
     </Box>
   );
 }
