@@ -6,6 +6,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Root from "./routes/root";
 import UserPage from "./routes/user";
 import AdminPage from "./routes/admin";
+import { Provider } from "react-redux";
+import { store } from "./state/store"
 
 const router = createBrowserRouter([
   {
@@ -20,9 +22,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <RouterProvider router={router} />
-    </LocalizationProvider>
+    <Provider store={store}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <RouterProvider router={router} />
+      </LocalizationProvider>
+    </Provider>
   );
 }
 

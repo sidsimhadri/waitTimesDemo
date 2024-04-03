@@ -1,120 +1,89 @@
-
-import React, { useState } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-import Drawer from '@mui/material/Drawer';
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import {
+  Box,
+  Tabs,
+  Tab,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  CircularProgress,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { CircularProgress, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
-import { Client } from "../types";
-
-const API_URL = "http://127.0.0.1:8080/admin";
+import { Outlet } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import {
+  refreshClientsThunk,
+  selectAllClients,
+} from "../state/activeClientsSlice";
 
 function Root() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const allClients = useAppSelector(selectAllClients);
   const [isLoading, setIsLoading] = useState(false);
-  const [value, setValue] = React.useState(0);
+  const [curTab, setCurTab] = useState(0); // For Tabs
+  const [selectedIndex, setSelectedIndex] = useState(-1); // No client is selected by default
 
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(refreshClientsThunk())
+      .unwrap()
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false)); // Error handling
+  }, [dispatch]);
 
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const handleRefreshClick = () => {
+    setIsLoading(true);
+    dispatch(refreshClientsThunk())
+      .unwrap()
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false)); // Error handling
+  };
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number,
-  ) => {
+  const handleListItemClick = (index: number) => {
     setSelectedIndex(index);
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-    // Navigate based on tab selection
-    switch (newValue) {
-      case 0:
-        navigate("/admin");
-        break;
-      case 1:
-        navigate("/user");
-        break;
-      default:
-        break;
-    }
+  const handleChange = (event: React.SyntheticEvent, newCurTab: number) => {
+    setCurTab(newCurTab);
+    navigate(newCurTab === 0 ? "/admin" : "/user");
   };
-    const [error, setError] = useState("");
-  const [clients, setClients] = useState<Client[]>([]);
-    const refreshClients = async () => {
-    setIsLoading(true);
-    setError("");
-    try {
-      const response = await fetch(`${API_URL}/clients`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch clients");
-      }
-      const data = await response.json();
-      console.log(data)
-      setClients(data);
-    } catch (error) {
-      let errorMessage = "Failed to fetch clients";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      console.log(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
 
   return (
-    <Box sx={{ display: 'flex' }}>
-
-
-    <Box>
-        <Drawer
-        variant="permanent"
-        anchor="left">
+    <Box sx={{ display: "flex", width: "100vw", height: "100vh" }}>
+      <Box sx={{ width: "20%", bgcolor: "lightgray" }}>
         <List>
-        <ListItemButton
-              selected={selectedIndex === 0}
-              onClick={refreshClients}
-          >
-        <ListItemIcon>
-        {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
-          </ListItemIcon>
-          <ListItemText primary="Refresh Active Clients" />
+          <ListItemButton onClick={handleRefreshClick}>
+            <ListItemIcon>
+              {isLoading ? <CircularProgress size={24} /> : <RefreshIcon />}
+            </ListItemIcon>
+            <ListItemText primary="Refresh Clients" />
+          </ListItemButton>
+          {/* {allClients.map((client, index) => (
+            <ListItemButton
+              key={client.id}
+              selected={selectedIndex === index}
+              onClick={() => handleListItemClick(index)}
+            >
+              <ListItemText primary={client.name} />
             </ListItemButton>
+          ))} */}
         </List>
-
-        </Drawer>
-        
-
-
-
       </Box>
-
-
-
-
-            <Box sx={{ borderBottom: 1, borderColor: "divider", position: "relative" }}>
+      <Box sx={{ flexGrow: 1 }}>
         <Tabs
-          value={value}
+          value={curTab}
           onChange={handleChange}
-          aria-label="basic tabs example"
+          aria-label="Navigation Tabs"
         >
           <Tab label="Admin" />
           <Tab label="User" />
         </Tabs>
-          <Outlet />
+        <Outlet />
       </Box>
     </Box>
-    
-
-
-    
   );
 }
 
