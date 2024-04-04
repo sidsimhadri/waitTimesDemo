@@ -1,0 +1,21 @@
+
+
+active Client in global state
+
+Admin Page needs
+    Pings within range. Potentially move pings into client to improve performance if making the data request after filters are set
+    in this case, we'll need good default values for initial load. 
+        proposed default behaviour:
+            full range of time series values in the new get all ping for client endpoint
+
+User Page needs
+    Most recent ping (think about this part more, what does that mean? when do i pull it? how do i keep it up to date?)
+    All pings to create daily bins
+    
+
+
+
+Alternate!!
+    Pull all pings for client when you select the client/refresh clients.
+    set icon color in root sidebar based on most recent value(gradient or treshold?) --- how do we get this?
+    
