@@ -7,26 +7,18 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import { selectActiveClient } from "../state/activeClientsSlice";
 import {
   BarChart,
   Bar,
-  Rectangle,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from "recharts";
+import { useAppSelector } from "../state/hooks";
 
-// Sample data
-const data = [
-  { date: "2024-01-01", value: 400 },
-  { date: "2024-01-02", value: 300 },
-  { date: "2024-01-03", value: 200 },
-  { date: "2024-01-04", value: 278 },
-  { date: "2024-01-05", value: 189 },
-];
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
@@ -38,13 +30,22 @@ export default function AdminPage() {
     dayjs("2022-04-17T15:30")
   );
 
-  // Filter data based on the range between startValue and endValue
-  const filteredData = data.filter((item) => {
-    const itemDate = dayjs(item.date);
-    return (
-      itemDate.isSameOrAfter(startValue) && itemDate.isSameOrBefore(endValue)
-    );
-  });
+  // // Filter data based on the range between startValue and endValue
+  // const filteredData = data.filter((item) => {
+  //   const itemDate = dayjs(item.date);
+  //   return (
+  //     itemDate.isSameOrAfter(startValue) && itemDate.isSameOrBefore(endValue)
+  //   );
+  // });
+  const activeClient = useAppSelector(selectActiveClient);
+  const data = [
+    {
+      name: activeClient,
+      value: 4000,
+      pv: 2400,
+      amt: 2400,
+    },
+  ];
 
   return (
     <>
@@ -62,26 +63,26 @@ export default function AdminPage() {
           />
         </Box>
       </LocalizationProvider>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          width={500}
-          height={300}
-          data={filteredData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="value" fill="#8884d8" />
-        </BarChart>
-      </ResponsiveContainer>
+      <div>{activeClient?.name}</div>
+      <BarChart
+        width={500}
+        height={300}
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="time" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="pv" fill="#8884d8" />
+        <Bar dataKey="uv" fill="#82ca9d" />
+      </BarChart>
     </>
   );
 }
