@@ -1,6 +1,8 @@
 export type Client = {
-  name: string;
-  id: string;
+    id: string;
+    name: string;
+    configuration: string;
+    type: string;
 };
 
 export type Ping = {

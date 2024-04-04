@@ -16,8 +16,10 @@ import { useAppDispatch, useAppSelector } from "../state/hooks";
 import {
   refreshClientsThunk,
   selectAllClients,
+  setActiveClient,
 } from "../state/activeClientsSlice";
-
+import ClientListItem from "../components/clientListItem";
+import type { Client } from "../types";
 function Root() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -42,8 +44,9 @@ function Root() {
       .catch(() => setIsLoading(false)); // Error handling
   };
 
-  const handleListItemClick = (index: number) => {
+  const handleListItemClick = (client: Client, index: number) => {
     setSelectedIndex(index);
+    dispatch(setActiveClient(client));
   };
 
   const handleChange = (event: React.SyntheticEvent, newCurTab: number) => {
@@ -61,15 +64,15 @@ function Root() {
             </ListItemIcon>
             <ListItemText primary="Refresh Clients" />
           </ListItemButton>
-          {/* {allClients.map((client, index) => (
+          {allClients.map((client, index) => (
             <ListItemButton
               key={client.id}
               selected={selectedIndex === index}
-              onClick={() => handleListItemClick(index)}
+              onClick={() => handleListItemClick(client, index)}
             >
-              <ListItemText primary={client.name} />
+              <ClientListItem {...client} />
             </ListItemButton>
-          ))} */}
+          ))}
         </List>
       </Box>
       <Box sx={{ flexGrow: 1 }}>
@@ -81,7 +84,9 @@ function Root() {
           <Tab label="Admin" />
           <Tab label="User" />
         </Tabs>
-        <Outlet />
+        <Box sx={{ padding: 3 }}>
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
